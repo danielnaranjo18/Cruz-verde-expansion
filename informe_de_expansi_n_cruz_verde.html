@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Estratégico de Expansión - Cruz Verde Colombia</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cv: {
+                            green: '#00853D',
+                            lightgreen: '#79C142',
+                            darkgreen: '#005826',
+                            mint: '#EBF6F0',
+                            bg: '#F4F8F5',
+                            orange: '#FF6B00',
+                            dark: '#111827',
+                            slate: '#475569'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #F4F8F5;
+            color: #111827;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 330px;
+            max-height: 390px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 133, 61, 0.12);
+        }
+
+        .nav-link.active {
+            color: #00853D;
+            border-bottom: 3px solid #00853D;
+            font-weight: 700;
+        }
+
+        /* Barra de desplazamiento personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #EBF6F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00853D;
+            border-radius: 9999px;
+        }
+
+        /* Estilos de Impresión y Exportación a PDF */
+        @media print {
+            header nav, header button, #mobile-menu, .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+            }
+            .glass-card, .bg-white {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            .chart-container {
+                height: 280px !important;
+                max-height: 280px !important;
+                page-break-inside: avoid;
+            }
+            section, table, .grid {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-800">
+
+    <!-- Encabezado y Navegación Principal -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-md border-b border-cv-green/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20 gap-3">
+                
+                <!-- Insignia Corporativa de Marca Cruz Verde -->
+                <div class="flex items-center space-x-3 sm:space-x-4 flex-shrink-0">
+                    <div class="bg-cv-green text-white p-2 sm:p-2.5 rounded-2xl shadow-lg flex items-center justify-center flex-shrink-0">
+                        <div class="relative w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center font-bold text-xl sm:text-2xl">
+                            <span class="absolute text-white font-extrabold">+</span>
+                        </div>
+                    </div>
+                    <div class="whitespace-nowrap">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xl sm:text-2xl font-black text-cv-darkgreen tracking-tight">Cruz Verde</span>
+                            <span class="bg-cv-mint text-cv-green text-[10px] sm:text-xs font-extrabold px-2 py-0.5 rounded-full border border-cv-green/30">Colombia</span>
+                        </div>
+                        <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Dirección Nacional de Expansión</p>
+                    </div>
+                </div>
+
+                <!-- Menú de Navegación de Escritorio con control de desbordamiento y espacio fluido -->
+                <nav class="hidden lg:flex items-center space-x-3 xl:space-x-6 text-xs xl:text-sm font-semibold text-slate-600 whitespace-nowrap">
+                    <a href="#resumen" class="nav-link hover:text-cv-green transition py-2">Resumen</a>
+                    <a href="#mercado" class="nav-link hover:text-cv-green transition py-2">Mercado & Benchmarking</a>
+                    <a href="#eficiencia" class="nav-link hover:text-cv-green transition py-2">Eficiencia Retail</a>
+                    <a href="#proyecciones" class="nav-link hover:text-cv-green transition py-2 text-cv-green font-bold">Proyecciones (Q4 2026+)</a>
+                    <a href="#cumplimiento" class="nav-link hover:text-cv-green transition py-2">Normativa & ESG</a>
+                </nav>
+
+                <!-- Botón de Exportación "PDF" y Menú Móvil Toggle -->
+                <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+                    <button onclick="window.print()" class="inline-flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-cv-green text-white hover:bg-cv-darkgreen transition shadow-md border border-cv-green/30 whitespace-nowrap">
+                        <i data-lucide="printer" class="w-4 h-4 mr-1.5"></i> PDF
+                    </button>
+
+                    <!-- Botón Menú Móvil -->
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-xl text-slate-600 hover:text-cv-green hover:bg-cv-mint transition focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Desplegable Responsivo para Pantallas Pequeñas / Tabletas -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-cv-green/20 px-4 pt-2 pb-4 space-y-2 text-xs sm:text-sm font-semibold text-slate-600 shadow-lg">
+            <a href="#resumen" onclick="toggleMobileMenu()" class="block py-2.5 px-3 rounded-xl hover:bg-cv-mint hover:text-cv-green transition">Resumen</a>
+            <a href="#mercado" onclick="toggleMobileMenu()" class="block py-2.5 px-3 rounded-xl hover:bg-cv-mint hover:text-cv-green transition">Mercado & Benchmarking</a>
+            <a href="#eficiencia" onclick="toggleMobileMenu()" class="block py-2.5 px-3 rounded-xl hover:bg-cv-mint hover:text-cv-green transition">Eficiencia Retail</a>
+            <a href="#proyecciones" onclick="toggleMobileMenu()" class="block py-2.5 px-3 rounded-xl hover:bg-cv-mint hover:text-cv-green font-bold text-cv-green transition">Proyecciones (Q4 2026+)</a>
+            <a href="#cumplimiento" onclick="toggleMobileMenu()" class="block py-2.5 px-3 rounded-xl hover:bg-cv-mint hover:text-cv-green transition">Normativa & ESG</a>
+        </div>
+    </header>
+
+    <!-- Banner Principal Ejecutivo -->
+    <section id="resumen" class="relative bg-gradient-to-br from-cv-darkgreen via-cv-green to-emerald-700 text-white py-12 px-4 sm:px-6 lg:px-8 shadow-inner overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="relative max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div class="max-w-2xl text-center lg:text-left">
+                <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-emerald-200 mb-4 border border-white/20">
+                    <i data-lucide="trending-up" class="w-4 h-4 mr-2 text-cv-lightgreen"></i> Estrategia de Crecimiento Sostenible
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                    Plan de Expansión & Eficiencia Retail
+                </h1>
+                <p class="mt-4 text-emerald-50 text-base sm:text-lg font-medium leading-relaxed">
+                    Capitalizando la sólida inercia de crecimiento del <strong>+12.6% YoY en ventas</strong>, este plan estratégico impulsa la aceleración comercial a partir del <strong>Q4 2026</strong>. Enfocado en maximizar la <strong>rentabilidad B2C</strong>, la <strong>facturación por metro cuadrado</strong> y la <strong>eficiencia por empleado</strong>, consolidamos un despliegue nacional Fast-Track en <strong>menos de 50 días por tienda</strong>.
+                </p>
+            </div>
+
+            <!-- Matriz de Tarjetas con Métricas Clave -->
+            <div class="grid grid-cols-2 sm:grid-cols-2 gap-4 w-full lg:w-auto">
+                <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-center hover:bg-white/20 transition">
+                    <span class="text-emerald-200 text-xs font-bold uppercase tracking-wider block">Red de Tiendas</span>
+                    <span class="text-3xl sm:text-4xl font-black mt-1 block">1,000+</span>
+                    <span class="text-xs text-white/80 mt-1 block">Puntos Nacionales</span>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-center hover:bg-white/20 transition">
+                    <span class="text-emerald-200 text-xs font-bold uppercase tracking-wider block">Crecimiento Ventas</span>
+                    <span class="text-3xl sm:text-4xl font-black text-cv-lightgreen mt-1 block">+12.6%</span>
+                    <span class="text-xs text-white/80 mt-1 block">Inercia YoY Mantenida</span>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-center hover:bg-white/20 transition">
+                    <span class="text-emerald-200 text-xs font-bold uppercase tracking-wider block">Market Share</span>
+                    <span class="text-3xl sm:text-4xl font-black text-cv-orange mt-1 block">39.9%</span>
+                    <span class="text-xs text-white/80 mt-1 block">Líder Absoluto Colombia</span>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20 text-center hover:bg-white/20 transition">
+                    <span class="text-emerald-200 text-xs font-bold uppercase tracking-wider block">Tiempo Apertura</span>
+                    <span class="text-3xl sm:text-4xl font-black mt-1 text-cv-lightgreen block">&lt; 50d</span>
+                    <span class="text-xs text-white/80 mt-1 block">Ciclo Fast-Track</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenedor Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+
+        <!-- Sección 1: Participación de Mercado y Benchmarking Competitivo -->
+        <section id="mercado" class="space-y-8">
+            <div class="border-l-4 border-cv-green pl-4">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-cv-darkgreen">Análisis de Mercado & Benchmarking Competitivo</h2>
+                <p class="text-slate-600 text-sm sm:text-base">Consolidación del liderazgo en Colombia y comparación táctica frente a competidores directos (Farmatodo, Coopidrogas, Drogas La Rebaja).</p>
+            </div>
+
+            <!-- Cuadrícula de Gráficos -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Gráfico 1: Participación de Mercado (Incluyendo Farmatodo) -->
+                <div class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-cv-darkgreen">Participación de Mercado Farmacéutico</h3>
+                            <p class="text-xs text-slate-500">Cuota estimada en Colombia incluyendo Retail & Conveniencia</p>
+                        </div>
+                        <span class="bg-cv-mint text-cv-green p-2 rounded-xl">
+                            <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                        </span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="marketShareChart"></canvas>
+                    </div>
+                    <div class="mt-4 p-3 bg-cv-mint/60 rounded-xl border border-cv-green/20 text-xs text-cv-darkgreen font-medium flex items-start gap-2">
+                        <i data-lucide="info" class="w-4 h-4 text-cv-green flex-shrink-0 mt-0.5"></i>
+                        <span>Cruz Verde lidera con 39.9% de cuota. Farmatodo captura un 8.5% apalancado en tiendas grandes de conveniencia 24H y alto ticket en dermocosmética.</span>
+                    </div>
+                </div>
+
+                <!-- Gráfico 2: Pivote Estratégico (PBS vs B2C) -->
+                <div class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-cv-darkgreen">Reconfiguración de Ingresos (Pivote B2C)</h3>
+                            <p class="text-xs text-slate-500">Migración estratégica de dependencia institucional hacia Venta Directa</p>
+                        </div>
+                        <span class="bg-orange-50 text-cv-orange p-2 rounded-xl">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                        </span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="strategyShiftChart"></canvas>
+                    </div>
+                    <div class="mt-4 p-3 bg-orange-50 rounded-xl border border-orange-200 text-xs text-slate-700 font-medium flex items-start gap-2">
+                        <i data-lucide="zap" class="w-4 h-4 text-cv-orange flex-shrink-0 mt-0.5"></i>
+                        <span>Priorizando la venta retail de mayor margen, se proyecta alcanzar un 75% de ingresos en venta directa para 2028, reduciendo la exposición al canal institucional.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla Detallada de Benchmarking Competitivo -->
+            <div class="bg-white rounded-2xl shadow-sm border border-cv-green/15 overflow-hidden">
+                <div class="p-6 bg-cv-mint/50 border-b border-cv-green/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-cv-darkgreen">Matriz de Benchmarking Competitivo: Cruz Verde vs. Industria</h3>
+                        <p class="text-xs text-slate-500">Evaluación del modelo de negocio, formatos inmobiliarios y velocidad operativa</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-bold text-cv-green bg-white px-3 py-1 rounded-lg border border-cv-green/20">
+                        <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 mr-1.5"></i> Análisis Comparativo Retail
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-cv-darkgreen uppercase text-xs font-bold tracking-wider border-b border-slate-200">
+                                <th class="p-4 pl-6">Variable de Análisis</th>
+                                <th class="p-4 bg-cv-mint/80 text-cv-darkgreen border-x border-cv-green/20 font-extrabold">
+                                    <div class="flex items-center space-x-1">
+                                        <span class="w-2 h-2 rounded-full bg-cv-green"></span>
+                                        <span>CRUZ VERDE</span>
+                                    </div>
+                                </th>
+                                <th class="p-4 text-blue-900 font-extrabold">FARMATODO</th>
+                                <th class="p-4 text-slate-700">COOPIDROGAS</th>
+                                <th class="p-4 text-slate-700">DROGAS LA REBAJA</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4 pl-6 font-bold text-slate-800">Formato Comercial Domina</td>
+                                <td class="p-4 bg-cv-mint/30 border-x border-cv-green/10 font-bold text-cv-darkgreen">
+                                    Multiformato (Standalone, Mall, Street, Hub)
+                                </td>
+                                <td class="p-4 font-semibold text-blue-900">Convenience Superstore (250-400 m²)</td>
+                                <td class="p-4">Droguería barrial independiente</td>
+                                <td class="p-4">Droguería tradicional de mostrador</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4 pl-6 font-bold text-slate-800">Propuesta de Valor Focus</td>
+                                <td class="p-4 bg-cv-mint/30 border-x border-cv-green/10 font-bold text-cv-darkgreen">
+                                    Salud Integral, Dermo, Farma & Cobertura Omnicanal
+                                </td>
+                                <td class="p-4 font-semibold text-blue-900">Autoservicio, Belleza, Snacks & 24H</td>
+                                <td class="p-4">Cercanía y precio accesible</td>
+                                <td class="p-4">Medicamentos de amplio portafolio</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4 pl-6 font-bold text-slate-800">Velocidad Apertura (Días)</td>
+                                <td class="p-4 bg-cv-mint/30 border-x border-cv-green/10 font-bold text-emerald-700">
+                                    &lt; 50 Días (Fast-Track Modular)
+                                </td>
+                                <td class="p-4 font-semibold text-slate-600">75 - 90 Días (Alto CAPEX)</td>
+                                <td class="p-4">Variable según el asociado</td>
+                                <td class="p-4">60 - 80 Días</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="p-4 pl-6 font-bold text-slate-800">Estrategia Omnicanal / Q-Commerce</td>
+                                <td class="p-4 bg-cv-mint/30 border-x border-cv-green/10 font-bold text-cv-darkgreen">
+                                    App Propia, Flota Eléctrica, Rappi & Domi 24/7
+                                </td>
+                                <td class="p-4 font-semibold text-blue-900">App Propia con Entrega &lt; 30 min</td>
+                                <td class="p-4 text-slate-400">Baja integración digital centralizada</td>
+                                <td class="p-4 text-slate-500">Servicio telefónico / WhatsApp</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 2: Eficiencias Operativas e Indicadores Clave de Retail -->
+        <section id="eficiencia" class="space-y-8">
+            <div class="border-l-4 border-cv-green pl-4">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-cv-darkgreen">Estimados y Eficiencias Operativas por Tipología de Tienda</h2>
+                <p class="text-slate-600 text-sm sm:text-base">Métricas clave de rendimiento comercial y densidad de facturación proyectadas por modelo de punto de venta.</p>
+            </div>
+
+            <!-- Tarjetas Comparativas de KPIs por Formato -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Formato 1: Standalone -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-cv-green/20 hover:shadow-md transition space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-cv-green"></span>
+                            <h3 class="font-extrabold text-cv-darkgreen text-lg">Standalone (Auto)</h3>
+                        </div>
+                        <span class="text-xs font-extrabold bg-cv-mint text-cv-green px-2.5 py-1 rounded-md">180 - 300 m²</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Facturación / m² / Mes:</span>
+                            <span class="font-bold text-cv-darkgreen">$1.8M - $2.3M COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Facturación / Empleado:</span>
+                            <span class="font-bold text-cv-darkgreen">$42M - $50M COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Ticket Promedio (AOV):</span>
+                            <span class="font-bold text-cv-orange">$68,500 COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Transacciones / Día:</span>
+                            <span class="font-bold text-slate-800">220 - 280 TRX</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Margen Bruto Retail:</span>
+                            <span class="font-bold text-emerald-700">34.5%</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Unidades por Ticket (UPT):</span>
+                            <span class="font-bold text-slate-800">3.4 Unidades</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formato 2: Street Front -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-cv-green/20 hover:shadow-md transition space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-cv-lightgreen"></span>
+                            <h3 class="font-extrabold text-cv-darkgreen text-lg">Street Front</h3>
+                        </div>
+                        <span class="text-xs font-extrabold bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-md">80 - 150 m²</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Facturación / m² / Mes:</span>
+                            <span class="font-bold text-cv-darkgreen">$2.1M - $2.7M COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Facturación / Empleado:</span>
+                            <span class="font-bold text-cv-darkgreen">$38M - $45M COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Ticket Promedio (AOV):</span>
+                            <span class="font-bold text-cv-orange">$42,000 COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Transacciones / Día:</span>
+                            <span class="font-bold text-slate-800">310 - 420 TRX</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Margen Bruto Retail:</span>
+                            <span class="font-bold text-emerald-700">31.0%</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Unidades por Ticket (UPT):</span>
+                            <span class="font-bold text-slate-800">2.2 Unidades</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formato 3: Centro Comercial -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-cv-green/20 hover:shadow-md transition space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-cv-orange"></span>
+                            <h3 class="font-extrabold text-cv-darkgreen text-lg">Centro Comercial</h3>
+                        </div>
+                        <span class="text-xs font-extrabold bg-orange-50 text-cv-orange px-2.5 py-1 rounded-md">60 - 120 m²</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Facturación / m² / Mes:</span>
+                            <span class="font-bold text-cv-darkgreen">$3.2M - $4.1M COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Facturación / Empleado:</span>
+                            <span class="font-bold text-cv-darkgreen">$48M - $58M COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Ticket Promedio (AOV):</span>
+                            <span class="font-bold text-cv-orange">$85,000 COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Transacciones / Día:</span>
+                            <span class="font-bold text-slate-800">180 - 250 TRX</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Margen Bruto Retail:</span>
+                            <span class="font-bold text-emerald-700">38.0%</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Unidades por Ticket (UPT):</span>
+                            <span class="font-bold text-slate-800">2.8 Unidades</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formato 4: Hub Salud / IPS -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-cv-green/20 hover:shadow-md transition space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+                            <h3 class="font-extrabold text-cv-darkgreen text-lg">Hub Salud / IPS</h3>
+                        </div>
+                        <span class="text-xs font-extrabold bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-md">150 - 250 m²</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Facturación / m² / Mes:</span>
+                            <span class="font-bold text-cv-darkgreen">$2.5M - $3.1M COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Facturación / Empleado:</span>
+                            <span class="font-bold text-cv-darkgreen">$52M - $62M COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Ticket Promedio (AOV):</span>
+                            <span class="font-bold text-cv-orange">$115,000 COP</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Transacciones / Día:</span>
+                            <span class="font-bold text-slate-800">200 - 290 TRX</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Margen Bruto Retail:</span>
+                            <span class="font-bold text-emerald-700">29.5%</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                            <span class="text-slate-500 font-medium">Unidades por Ticket (UPT):</span>
+                            <span class="font-bold text-slate-800">3.8 Unidades</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Sección 3: Proyecciones Trimestrales Homogéneas desde Q4 2026 -->
+        <section id="proyecciones" class="space-y-8">
+            <div class="border-l-4 border-cv-green pl-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-cv-darkgreen">Proyecciones de Expansión & Ventas (Q4 2026 - Q4 2028)</h2>
+                    <p class="text-slate-600 text-sm sm:text-base">Evolución trimestral homogénea de ingresos B2C sustentada en la tendencia del <strong>+12.6% YoY</strong> de crecimiento histórico.</p>
+                </div>
+                <div class="flex items-center space-x-2 bg-white p-2 rounded-xl shadow-sm border border-slate-200 text-xs font-bold text-cv-green">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>Tasa de Crecimiento Proyectada: ~3.01% Trimestral (12.6% Anual)</span>
+                </div>
+            </div>
+
+            <!-- Gráfico Visual: Proyecciones Trimestrales Continuas -->
+            <div class="glass-card p-6 rounded-2xl shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-cv-darkgreen">Plan Trimestral: Aperturas Netas vs. Facturación B2C ($ COP)</h3>
+                        <p class="text-xs text-slate-500">Cronograma unificado desde Q4 2026 hasta Q4 2028 sin mezcla de temporalidades</p>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-bold">
+                        <span class="flex items-center text-cv-green"><span class="w-3 h-3 rounded bg-cv-green mr-1.5"></span> Aperturas Netas / Trimestre</span>
+                        <span class="flex items-center text-cv-orange"><span class="w-3 h-3 rounded bg-cv-orange mr-1.5"></span> Ventas B2C ($ Mil Millones)</span>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="roadmapGrowthChart"></canvas>
+                </div>
+
+                <!-- Bloque de Explicación Bajo la Gráfica -->
+                <div class="mt-6 p-4 bg-cv-mint/60 rounded-xl border border-cv-green/20 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-700 font-medium">
+                    <div class="flex items-start space-x-2">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-cv-green flex-shrink-0 mt-0.5"></i>
+                        <span><strong>Inercia de Ventas:</strong> Crecimiento base ajustado al 12.6% YoY de la compañía (2025 vs 2024).</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-cv-green flex-shrink-0 mt-0.5"></i>
+                        <span><strong>Plan de Aperturas:</strong> ~25 a 35 aperturas netas trimestrales a partir del Q4 2026.</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-cv-green flex-shrink-0 mt-0.5"></i>
+                        <span><strong>Fast-Track execution:</strong> Modelo estandarizado en tiempo récord de apertura (&lt;50 días).</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proceso Operativo Fast-Track por Etapas de Días -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Etapa 1 -->
+                <div class="bg-white p-6 rounded-2xl border-t-4 border-cv-green shadow-sm hover:shadow-md transition space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold uppercase px-2.5 py-1 bg-cv-mint text-cv-darkgreen rounded-md">Días 1 - 10</span>
+                        <span class="text-xs font-bold text-cv-green">Fase 1</span>
+                    </div>
+                    <h4 class="font-bold text-cv-darkgreen text-base">Prospección Fast-Track & GIS</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Análisis ágil de tráfico con modelos predictivos territoriales para filtrado inmediato de uso de suelo y absorción.
+                    </p>
+                    <div class="border-t border-slate-100 pt-3 space-y-2">
+                        <div class="text-xs font-bold text-slate-700">Hitos Clave:</div>
+                        <ul class="text-xs text-slate-600 space-y-1">
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-cv-green mr-1.5 flex-shrink-0 mt-0.5"></i> Dossier exprés aprobado en 72h</li>
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-cv-green mr-1.5 flex-shrink-0 mt-0.5"></i> Pre-estudio de viabilidad comercial</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Etapa 2 -->
+                <div class="bg-white p-6 rounded-2xl border-t-4 border-cv-lightgreen shadow-sm hover:shadow-md transition space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold uppercase px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-md">Días 11 - 22</span>
+                        <span class="text-xs font-bold text-cv-lightgreen">Fase 2</span>
+                    </div>
+                    <h4 class="font-bold text-cv-darkgreen text-base">Negociación & Contrato Unificado</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Cierre contractual exprés con cláusulas estandarizadas, garantizando reducción mínima del 12% en canon.
+                    </p>
+                    <div class="border-t border-slate-100 pt-3 space-y-2">
+                        <div class="text-xs font-bold text-slate-700">Hitos Clave:</div>
+                        <ul class="text-xs text-slate-600 space-y-1">
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-cv-lightgreen mr-1.5 flex-shrink-0 mt-0.5"></i> Firma de arrendamiento estandarizado</li>
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-cv-lightgreen mr-1.5 flex-shrink-0 mt-0.5"></i> Radicación de permisos express</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Etapa 3 -->
+                <div class="bg-white p-6 rounded-2xl border-t-4 border-cv-orange shadow-sm hover:shadow-md transition space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold uppercase px-2.5 py-1 bg-orange-50 text-cv-orange rounded-md">Días 23 - 42</span>
+                        <span class="text-xs font-bold text-cv-orange">Fase 3</span>
+                    </div>
+                    <h4 class="font-bold text-cv-darkgreen text-base">Obra Civil Modular & Cadena Frío</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Adecuación modular prefabricada, ensamblaje de mobiliario estándar y validación previa de la Res. 1403.
+                    </p>
+                    <div class="border-t border-slate-100 pt-3 space-y-2">
+                        <div class="text-xs font-bold text-slate-700">Hitos Clave:</div>
+                        <ul class="text-xs text-slate-600 space-y-1">
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-cv-orange mr-1.5 flex-shrink-0 mt-0.5"></i> Montaje modular en 18 días</li>
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-cv-orange mr-1.5 flex-shrink-0 mt-0.5"></i> Habilitación de cadena de frío IOT</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Etapa 4 -->
+                <div class="bg-white p-6 rounded-2xl border-t-4 border-emerald-600 shadow-sm hover:shadow-md transition space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold uppercase px-2.5 py-1 bg-emerald-100 text-emerald-900 rounded-md">Días 43 - 50</span>
+                        <span class="text-xs font-bold text-emerald-700">Fase 4</span>
+                    </div>
+                    <h4 class="font-bold text-cv-darkgreen text-base">Cargue, Habilitación & Apertura</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Inventariado automatizado en 48 horas, alta en sistemas omnicanal y corte de cinta formal para público.
+                    </p>
+                    <div class="border-t border-slate-100 pt-3 space-y-2">
+                        <div class="text-xs font-bold text-slate-700">Hitos Clave:</div>
+                        <ul class="text-xs text-slate-600 space-y-1">
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 mr-1.5 flex-shrink-0 mt-0.5"></i> Inspección sanitaria favorable</li>
+                            <li class="flex items-start"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 mr-1.5 flex-shrink-0 mt-0.5"></i> Integración Q-Commerce lista</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Sección 4: Marco Normativo Sanitario & Sostenibilidad ESG -->
+        <section id="cumplimiento" class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            
+            <!-- Flujo de Cumplimiento Sanitario (Res. 1403 / INVIMA) -->
+            <div class="bg-cv-darkgreen text-white p-8 rounded-2xl shadow-md flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-2 text-cv-lightgreen mb-2">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Normativa Sanitaria Invima</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Cumplimiento Operativo - Resolución 1403</h3>
+                    <p class="text-emerald-100 text-xs sm:text-sm leading-relaxed mb-6">
+                        Para garantizar la habilitación sin reprocesos dentro del margen de &lt;50 días ante las Secretarías de Salud, cada tienda adopta layouts estandarizados preaprobados:
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/15">
+                            <span class="text-cv-lightgreen font-black text-xs block mb-1">01. Recepción Técnica</span>
+                            <p class="text-[11px] text-white/80">Inspección administrativa, lote, vencimiento y embalaje.</p>
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/15">
+                            <span class="text-cv-lightgreen font-black text-xs block mb-1">02. Área Cuarentena</span>
+                            <p class="text-[11px] text-white/80">Aislamiento físico para devoluciones y no conformidades.</p>
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/15">
+                            <span class="text-cv-lightgreen font-black text-xs block mb-1">03. Cadena de Frío (2°-8°C)</span>
+                            <p class="text-[11px] text-white/80">Neveras grado médico con datalogger e historia continua.</p>
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-xl border border-white/15">
+                            <span class="text-cv-lightgreen font-black text-xs block mb-1">04. Dispensación & OTC</span>
+                            <p class="text-[11px] text-white/80">Asesoría profesional por Químico / Regente de Farmacia.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-white/10 text-xs text-emerald-200/80 flex justify-between items-center">
+                    <span>PGIRASA Basura Cero Aprobado</span>
+                    <span class="text-cv-lightgreen font-bold">Auditoría 100% Limpia</span>
+                </div>
+            </div>
+
+            <!-- Pilares ESG y Sostenibilidad Corporativa -->
+            <div class="glass-card p-8 rounded-2xl shadow-sm border border-cv-green/20 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-2 text-cv-green mb-2">
+                        <i data-lucide="leaf" class="w-6 h-6"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Estrategia ESG Corporativa</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-cv-darkgreen mb-4">Compromiso Sustentable 2030</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
+                        Integración transversal de la sostenibilidad en la huella inmobiliaria y operaciones logísticas de Cruz Verde.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4 p-3 bg-cv-mint/60 rounded-xl">
+                            <div class="p-2.5 bg-cv-green text-white rounded-lg">
+                                <i data-lucide="sun" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-cv-darkgreen">CEDI Solar & Eficiencia Energética</h4>
+                                <p class="text-xs text-slate-600">Autogeneración fotovoltaica en el Centro de Distribución Principal e iluminación LED en el 100% de la red de tiendas.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 p-3 bg-cv-mint/60 rounded-xl">
+                            <div class="p-2.5 bg-cv-lightgreen text-white rounded-lg">
+                                <i data-lucide="truck" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-cv-darkgreen">Flota de Repartos Verde (Q-Commerce)</h4>
+                                <p class="text-xs text-slate-600">Migración progresiva a motos y vans eléctricas para entregas a domicilio en Bogotá, Medellín y Cali.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 p-3 bg-cv-mint/60 rounded-xl">
+                            <div class="p-2.5 bg-cv-orange text-white rounded-lg">
+                                <i data-lucide="recycle" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-cv-darkgreen">Disposición Segura de Medicamentos</h4>
+                                <p class="text-xs text-slate-600">Puntos Azules en todas las farmacias para evitar la contaminación hídrica por medicamentos vencidos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span>Reporte de Sostenibilidad GRI</span>
+                    <span class="font-bold text-cv-green">Cruz Verde Sostenible</span>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Pie de Página Corporativo -->
+    <footer class="bg-cv-darkgreen text-white py-12 px-4 sm:px-6 lg:px-8 border-t-4 border-cv-lightgreen">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white text-cv-green p-2 rounded-xl font-black text-xl">+</div>
+                <div>
+                    <span class="text-lg font-bold block">Droguerías Cruz Verde Colombia</span>
+                    <span class="text-xs text-emerald-200">Dirección de Expansión & Desarrollo Inmobiliario</span>
+                </div>
+            </div>
+
+            <p class="text-xs text-emerald-100 text-center md:text-left">
+                &copy; 2026 Cruz Verde. Documento Estratégico Reservado para la Alta Dirección.
+            </p>
+
+            <div class="flex space-x-4 text-xs text-emerald-200">
+                <a href="https://www.cruzverde.com.co" target="_blank" class="hover:text-white underline">cruzverde.com.co</a>
+                <span>|</span>
+                <span>ISO 9001 & 14001</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lógica de Gráficos e Interacciones JavaScript -->
+    <script>
+        // Inicialización de Iconos Lucide
+        lucide.createIcons();
+
+        // Función para Toggle del Menú Móvil
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        // Asistente Tooltip de Chart.js para multitítulo
+        const customTooltipHandler = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    }
+                    return label;
+                }
+            }
+        };
+
+        // Gráfico 1: Participación de Mercado (Donut Chart incluyendo Farmatodo)
+        const ctxMarket = document.getElementById('marketShareChart').getContext('2d');
+        new Chart(ctxMarket, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cruz Verde', 'Coopidrogas', 'Drogas La Rebaja', 'Farmatodo', 'Colsubsidio', 'Cafam', 'Otros'],
+                datasets: [{
+                    data: [39.9, 23.4, 11.6, 8.5, 7.0, 5.6, 4.0],
+                    backgroundColor: [
+                        '#00853D', // Cruz Verde Verde Principal
+                        '#79C142', // Verde Secundario
+                        '#FF6B00', // Naranja Acento
+                        '#1E3A8A', // Farmatodo Azul Marino
+                        '#005826', // Verde Oscuro
+                        '#94A3B8', // Gris Pizarra
+                        '#CBD5E1'  // Gris Claro
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#FFFFFF',
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Montserrat', size: 11, weight: '600' },
+                            padding: 12,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: customTooltipHandler
+                },
+                cutout: '65%'
+            }
+        });
+
+        // Gráfico 2: Pivote Estratégico (Bar Chart Apilado B2C vs PBS)
+        const ctxShift = document.getElementById('strategyShiftChart').getContext('2d');
+        new Chart(ctxShift, {
+            type: 'bar',
+            data: {
+                labels: ['2024 (Base)', '2025 (Actual)', '2026 (Meta)', '2028 (Proyección)'],
+                datasets: [
+                    {
+                        label: 'Venta Directa Retail (B2C)',
+                        data: [40, 48, 62, 75],
+                        backgroundColor: '#00853D',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Convenios Institucionales (PBS)',
+                        data: [60, 52, 38, 25],
+                        backgroundColor: '#CBD5E1',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false },
+                        ticks: { font: { family: 'Montserrat', size: 11, weight: '600' } }
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: { display: true, text: '% Composición Ingresos', font: { family: 'Montserrat', size: 11, weight: '600' } },
+                        grid: { color: '#E2E8F0' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Montserrat', size: 11, weight: '600' }, usePointStyle: true }
+                    },
+                    tooltip: customTooltipHandler
+                }
+            }
+        });
+
+        // Gráfico 3: Proyecciones Trimestrales Continuas desde Q4 2026 hasta Q4 2028
+        // Modelo de crecimiento: ~12.6% YoY (~3.01% tasa trimestral compuesta)
+        const ctxRoadmap = document.getElementById('roadmapGrowthChart').getContext('2d');
+        new Chart(ctxRoadmap, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Q4 2026', 
+                    'Q1 2027', 'Q2 2027', 'Q3 2027', 'Q4 2027', 
+                    'Q1 2028', 'Q2 2028', 'Q3 2028', 'Q4 2028'
+                ],
+                datasets: [
+                    {
+                        type: 'bar',
+                        label: 'Aperturas Netas Trimestrales',
+                        data: [25, 20, 22, 25, 28, 25, 27, 30, 32],
+                        backgroundColor: '#00853D',
+                        borderRadius: 6,
+                        yAxisID: 'y'
+                    },
+                    {
+                        type: 'line',
+                        label: 'Ventas Proyectadas B2C ($ Mil Millones COP)',
+                        data: [105, 108.2, 111.5, 114.8, 118.2, 121.8, 125.5, 129.3, 133.1],
+                        borderColor: '#FF6B00',
+                        backgroundColor: '#FF6B00',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#FF6B00',
+                        tension: 0.2,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Montserrat', size: 10, weight: '700' } }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        min: 0,
+                        max: 40,
+                        title: { display: true, text: 'Aperturas / Trimestre', font: { family: 'Montserrat', size: 10, weight: '700' } },
+                        grid: { color: '#F1F5F9' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        min: 90,
+                        max: 150,
+                        title: { display: true, text: 'Ventas B2C ($ Mil Millones COP)', font: { family: 'Montserrat', size: 10, weight: '700' } },
+                        grid: { drawOnChartArea: false }
+                    }
+                },
+                plugins: {
+                    legend: { 
+                        display: true,
+                        position: 'top',
+                        labels: { font: { family: 'Montserrat', size: 11, weight: '600' }, usePointStyle: true }
+                    },
+                    tooltip: customTooltipHandler
+                }
+            }
+        });
+    </script>
+</body>
+</html>
